@@ -39,6 +39,7 @@ impl RollingHash{
 
     // mxは種類数上限。あと種類はちゃん全部列挙しないとなので配列が複数あるなら全部まとめてから座圧せよ。
     pub fn num_set(a: &Vec<usize>, mx: usize)->Self{
+        use std::collections::HashSet;
         let (mut pow, mut hash) = (Vec::from([1]), Vec::from([0]));
         let (mut p, mut h) = (1, 0);
         let mut used = HashSet::new();
@@ -89,7 +90,7 @@ impl RollingHash{
     }
 }
 
-fn compress_dic(a: &Vec<i64>)->HashMap<i64, usize>{
+pub fn compress_dic(a: &Vec<i64>)->std::collections::HashMap<i64, usize>{
     let mut b = a.clone();
     b.sort();
     b.dedup();

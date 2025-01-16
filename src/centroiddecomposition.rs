@@ -21,8 +21,9 @@ impl CentroidDecomposition{
     }
 
     pub fn build(&mut self){
+        use std::collections::VecDeque;
         let mut size = self.size_dfs();
-        let mut stack = std::collections::VecDeque::from([(0, !0, 0)]);
+        let mut stack = VecDeque::from([(0, !0, 0)]);
         for _ in 0..self.n{
             let (mut p, pre, d) = stack.pop_front().unwrap();
             let mut non = true;
@@ -49,6 +50,7 @@ impl CentroidDecomposition{
     }
 
     fn size_dfs(&mut self)->Vec<usize>{
+        use std::collections::VecDeque;
         let mut size = vec![1; self.n];
         let mut stack = VecDeque::from([(0, !0)]);
         let mut query = Vec::new();

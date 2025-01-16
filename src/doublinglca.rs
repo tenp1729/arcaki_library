@@ -18,6 +18,7 @@ impl LCA{
     }
 
     fn _bfs(&mut self, v: usize){
+        use std::collections::VecDeque;
         let mut stack = VecDeque::from([(v, !0, 0)]);
         while let Some((p, pre, d)) = stack.pop_front(){
             self.dp[p][0] = pre;
@@ -42,6 +43,7 @@ impl LCA{
     }
 
     pub fn lca(&self, mut u: usize, mut v: usize)-> usize{
+        use std::mem::swap;
         if self.depth[u] < self.depth[v]{
             swap(&mut u, &mut v);
         }

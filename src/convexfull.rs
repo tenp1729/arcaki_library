@@ -24,7 +24,7 @@ pub fn convex_hull(point: &Vec<(i64, i64)>)-> (Vec<(i64, i64)>, Vec<(i64, i64)>)
         }
         low_side.push(p);
     }
-    let res1 = up_side.iter().map(|&x| x).collect_vec();
-    let res2 = low_side.iter().map(|&x| x).collect_vec();
+    let res1 = up_side.iter().map(|&x| x).collect::<Vec<_>>();
+    let res2 = low_side.iter().map(|&x| x).collect::<Vec<_>>();
     (res1, res2)
 }

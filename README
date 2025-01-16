@@ -1,2 +1,63 @@
 競技プログラミング用ライブラリです。あると便利かなというものを少しずつ整備し始めている段階です。ACLをベースにしています。
 自由にコピペして使ってもらっても構いませんが使うことが少ないものなどは書いてからverifyしておらずバグっている場合があります。
+追加予定アルゴリズムはAtCoder-ABCやYukicoder、Codeforcesなどで出題例があったものがメインです。
+またLibrary Checkerについてはいつか全てやりたいと思っています。
+ACLが使えたりライブラリ化せず毎回書いていた場合などがありレベル順になっていません。
+
+現状の一覧
+・セグ木系
+    -セグ木
+    -遅延セグ木
+    -永続セグ木
+    -動的セグ木
+・Binary Indexed Tree
+・二分探索
+・mod上の整数演算
+    -floor
+    -拡張ユークリッドの互除法 O(logA)
+    -逆元 O(logN)
+    -階乗前計算 O(N)
+    -ダブリングによる累乗計算 O(logA)
+・重心分解
+・最近傍頂点対距離
+・ローリングハッシュ
+・凸包
+
+追加予定(確度はまちまちです)
+・双対セグメント木
+・二次元セグ木
+・SegmentTreeBeats!
+・UnionFind系
+    -通常
+    -Weighted Unionfind
+    -Range Parallel UnionFind
+    -部分永続UnionFind
+    -永続UnionFind
+・Wevalet Matrix
+・基本行列演算
+・行列累乗
+・オイラーツアー
+・重軽分解
+・Binary Trie
+・Trie
+・Splay木
+・サイクル検出
+・LowLink
+・ダイクストラ法及び最短経路木
+・オイラー路
+・木の直径
+・全方位木DP
+・Dynamic Connectivity
+・FFT,NTT
+・Bostan-Mori法
+・Kinoshita-Li合成
+・乗法的関数の和
+・Z-algorism
+・SA-IS
+・LCS
+・マンハッタン距離最小全域木
+・KD木
+・ドロネーの三角形分割
+・fortune algorism
+・2sat
+・LIS

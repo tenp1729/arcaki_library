@@ -57,7 +57,7 @@ impl<M: SegTreeMonoid> SegTree<M> {
     }
 
     pub fn all_prod(&mut self)->M::S{
-        self.data[1]
+        self.data[1].clone()
     }
 
     pub fn max_right<F>(&self, mut l: usize, f: F)->usize where F: Fn(&M::S)->bool{
