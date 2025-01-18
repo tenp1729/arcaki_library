@@ -10,7 +10,7 @@ pub struct DynamicSegmenttree<M> where M: SegTreeMonoid {
 }
 
 impl<M> DynamicSegmenttree<M> where M: SegTreeMonoid {
-    pub fn new(n: usize)->Self {
+    pub fn new(n: usize) -> Self {
         let n = n.next_power_of_two();
         DynamicSegmenttree {
             n, data: vec![(M::identity(), None, None)]
@@ -79,7 +79,7 @@ impl<M> DynamicSegmenttree<M> where M: SegTreeMonoid {
     fn prod_dfs(&self, p: usize, l: usize, r: usize, x: usize, y: usize) -> M::S {
         if r <= x || y <= l { return M::identity(); }
         let (z, left, right) =self.data[p];
-        if x <= l && r <= y{
+        if x <= l && r <= y {
             return z;
         }
         let m = (l + r) / 2;
@@ -96,9 +96,9 @@ impl<M> DynamicSegmenttree<M> where M: SegTreeMonoid {
         M::op(&res_l, &res_r)
     }
 
-    pub fn max_right<F>(&self, l: usize, f: F)->usize where F: Fn(&M::S)->bool {
+    pub fn max_right<F>(&self, l: usize, f: F) -> usize where F: Fn(&M::S) -> bool {
         assert!(f(&M::identity()));
-        if l==self.n{return self.n}
+        if l == self.n { return self.n }
         let mut ac = M::identity();
         self.max_right_dfs(0, 0, self.n, l, &mut ac, &f)
     }

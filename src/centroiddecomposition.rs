@@ -39,7 +39,7 @@ impl CentroidDecomposition {
             }
             self.pre[p] = pre;
             self.level[p] = d;
-            if size[p] > 1{
+            if size[p] > 1 {
                 for &nex in &self.tree[p] {
                     if self.level[nex] == !0 {
                         stack.push_back((nex, p, d+1));
@@ -61,7 +61,7 @@ impl CentroidDecomposition {
                 query.push((nex, p));
             }
         }
-        for &(p, pre) in query.iter().rev(){
+        for &(p, pre) in query.iter().rev() {
             size[pre] += size[p];
         }
         size
@@ -69,7 +69,7 @@ impl CentroidDecomposition {
 
     pub fn lca(&mut self, mut u: usize, mut v: usize) -> usize {
         let (du, dv) = (self.level[u], self.level[v]);
-        if du > dv{
+        if du > dv {
             for _ in 0..du - dv {
                 u = self.pre[u];
             }

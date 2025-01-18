@@ -29,7 +29,7 @@ fn closest_find(ps: &mut [(f64, f64)]) -> f64 {
         for &(px, py) in near.iter().rev() {
             if res + py < y{break;}
             let (dx, dy) = ((x - px).abs(), y - py);
-            res = res.min((dx * dx+ dy * dy).sqrt());
+            res = res.min((dx * dx + dy * dy).sqrt());
         }
         near.push((x, y));
     }

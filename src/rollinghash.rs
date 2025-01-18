@@ -1,5 +1,5 @@
 const B: u128 = 1001399;
-const M: u128 = (1 << 64) -59;
+const M: u128 = (1 << 64) - 59;
 
 pub struct RollingHash {
     hash: Vec<u128>,
@@ -12,7 +12,7 @@ impl RollingHash {
         let (mut p, mut h) = (1, 0);
         for i in 0..s.len() {
             p = (p * B) % M;
-            h = (h * B + s[i] as u128- 'a' as u128 + 1)%M;
+            h = (h * B + s[i] as u128 - 'a' as u128 + 1)%M;
             pow.push(p);
             hash.push(h);
         }
@@ -54,13 +54,13 @@ impl RollingHash {
             }
             hash.push(h);
         }
-        RollingHash{
+        RollingHash {
             hash,
             pow,
         }
     }
 
-    pub fn num_map(a: &Vec<usize>, mx: usize)->Self{
+    pub fn num_map(a: &Vec<usize>, mx: usize) -> Self {
         let (mut pow, mut hash) = (Vec::from([1]), Vec::from([0]));
         let (mut p, mut h) = (1, 0);
         for _ in 0..mx {
@@ -71,7 +71,7 @@ impl RollingHash {
             h = (h + pow[a[i]]) % M;
             hash.push(h);
         }
-        RollingHash{
+        RollingHash {
             hash,
             pow,
         }

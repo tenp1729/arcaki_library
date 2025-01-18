@@ -104,7 +104,7 @@ impl<F: LazySegtreeMonoid> LazySegtree<F> {
         }
         let mut acl = F::id_e();
         let mut acr = F::id_e();
-        while l < r{
+        while l < r {
             if l & 1 != 0 {
                 acl = F::op(&acl, &self.data[l]);
                 l += 1;
@@ -148,7 +148,7 @@ impl<F: LazySegtreeMonoid> LazySegtree<F> {
             l >>= 1; r >>= 1;
         }
         for i in 1..=self.log {
-            if ((left >> i) << i)!=left {
+            if ((left >> i) << i) != left {
                 self.update(left >> i);
             }
             if ((right >> i) << i) != right {
