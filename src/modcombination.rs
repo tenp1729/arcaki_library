@@ -32,7 +32,7 @@ pub fn comb(a: i64, b: i64, f: &Vec<(i64, i64)>) -> i64 {
 }
 
 pub fn factorial(x: i64) -> Vec<(i64, i64)> {
-    let mut f= vec![(1i64, 1i64), (1, 1)];
+    let mut f = vec![(1i64, 1i64), (1, 1)];
     let mut z = 1i64;
     let mut inv = vec![0; x as usize + 10];
     inv[1] = 1;
