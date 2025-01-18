@@ -21,7 +21,7 @@ pub fn mod_inverse(a: i64, m: i64) -> i64 {
 pub fn comb(a: i64, b: i64, f: &Vec<(i64, i64)>) -> i64 {
     if a < b {
         return 0;
-    } else if b == 0 || a == b{ 
+    } else if b == 0 || a == b { 
         return 1;
     } else {
         let x = f[a as usize].0;

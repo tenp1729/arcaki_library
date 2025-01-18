@@ -12,7 +12,7 @@ pub struct SegTree<M: SegTreeMonoid> {
 impl<M: SegTreeMonoid> SegTree<M> {
     pub fn new(n: usize) -> Self {
         let n = n.next_power_of_two();
-        let data = vec![M::identity(); 2*n];
+        let data = vec![M::identity(); 2 * n];
         SegTree{ n, data }
     }
 
