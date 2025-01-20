@@ -10,3 +10,4 @@ pub mod binaryindexedtree;
 pub mod convexfull;
 pub mod dynamicsegtree;
 pub mod rollinghash;
+pub mod addtion;

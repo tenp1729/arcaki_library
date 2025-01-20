@@ -48,12 +48,14 @@ ACLが使えたりライブラリ化せず毎回書いていた場合などが�
 ・木の直径
 ・全方位木DP
 ・Dynamic Connectivity
+・LCAベースのAuxiliary Tree
 ・FFT,NTT
 ・Bostan-Mori法
 ・Kinoshita-Li合成
 ・乗法的関数の和
 ・Z-algorism
 ・SA-IS
+・KMP法
 ・LCS
 ・マンハッタン距離最小全域木
 ・KD木
