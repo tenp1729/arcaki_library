@@ -24,7 +24,7 @@ pub fn miller_rabin(x: usize)->bool{
         cnt += 1;
         z >>= 1;
     }
-    let mut test = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
+    let test = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
     for p in test{
         if p==x{continue}
         let mut y = fast_mod_pow(p, z, x);
