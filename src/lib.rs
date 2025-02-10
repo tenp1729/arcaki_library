@@ -11,3 +11,4 @@ pub mod convexfull;
 pub mod dynamicsegtree;
 pub mod rollinghash;
 pub mod addtion;
+pub mod factorize;
