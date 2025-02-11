@@ -54,7 +54,7 @@ pub fn extended_gcd(a:i64,b:i64)->(i64,i64,i64) {
     }
 }
 
-fn prime_finder(n: usize)->usize{
+pub fn prime_finder(n: usize)->usize{
     if n%2==0{return 2;}
     let b = (n as f64).powf(0.125) as usize+1;
     for c in 1..n{
