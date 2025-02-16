@@ -9,7 +9,7 @@ pub trait SegTreeMonoid {
     fn op(a: &Self::S, b: &Self::S) -> Self::S;
 }
 
-// 計算に交換法則を要求しているので注意。
+// 計算に可換性を要求しているので注意。
 // 初期化時にノードを作らずNoneなら単位元を返す実装なら
 // 動的セグ木との兼用がおそらく可能でその場合10^9サイズとかでも問題ない。
 pub struct PersistentSegmenttree<M> where M: SegTreeMonoid {
