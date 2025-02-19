@@ -16,3 +16,4 @@ pub mod mint;
 pub mod crt;
 pub mod fft;
 pub mod offline_dynamic_connectivity;
+pub mod unionfind;
