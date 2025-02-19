@@ -105,10 +105,10 @@ pub fn offline_dynamic_connectivity(n: usize, query: &Vec<(usize, usize, usize)>
     while !vec.is_empty(){
         let (p, f) = vec.pop().unwrap();
         if f {
+            for &(u, v) in &segtree[p]{
+                uf.merge(u, v);
+            }
             if p < q{
-                for &(u, v) in &segtree[p]{
-                    uf.merge(u, v);
-                }
                 vec.push((p, false));
                 vec.push((2*p+1, true));
                 vec.push((2*p, true));
