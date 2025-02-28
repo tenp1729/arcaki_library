@@ -21,3 +21,4 @@ pub mod segmenttreebeats;
 pub mod retooting;
 pub mod sparsetablesq;
 pub mod segmenttree2d;
+pub mod weightedunionfind;

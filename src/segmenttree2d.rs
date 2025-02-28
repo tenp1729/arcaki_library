@@ -83,6 +83,38 @@ impl<M> SegmentTree2d<M> where M: SegtreeMonoid{
         res
     }
 
+    pub fn prod_all(&self)->M::S{
+        self.data[1][1].clone()
+    }
+
+    pub fn prod_x_line_all(&self, mut p: usize)->M::S{
+        p += self.h;
+        self.data[p][1].clone()
+    }
+
+    pub fn prod_y_line_all(&self, mut p: usize)->M::S{
+        p += self.w;
+        self.data[1][p].clone()
+    }
+
+    pub fn prod_x_axis_all_sec(&self, mut l: usize, mut r: usize)->M::S{
+        let mut res = M::identity();
+        l += self.h; r += self.h;
+        for x in self.get_sect(l, r){
+            res = M::op(&res, &self.data[x][1]);
+        }
+        res
+    }
+
+    pub fn prod_y_axis_all_sec(&self, mut l: usize, mut r: usize)->M::S{
+        let mut res = M::identity();
+        l += self.w; r += self.w;
+        for y in self.get_sect(l, r){
+            res = M::op(&res, &self.data[1][y]);
+        }
+        res
+    }
+
     pub fn set(&mut self, mut u: usize, mut v: usize, x: M::S){
         u += self.h;
         v += self.w;
@@ -107,7 +139,7 @@ impl<M> SegmentTree2d<M> where M: SegtreeMonoid{
         for _ in 1..=self.logh{
             u >>= 1;
             for &y in &ys{
-                self.data[u][y] = M::op(&self.data[u*2][y], &self.data[u*v+1][y]);
+                self.data[u][y] = M::op(&self.data[u*2][y], &self.data[u*2+1][y]);
             }
         }
     }
