@@ -40,6 +40,10 @@ impl RollbackUnionFind{
         self.find(u)==self.find(v)
     }
 
+    pub fn size(&mut self, p: usize)->usize{
+        (-self.parent[self.find(p)]) as usize
+    }
+
     pub fn rollback(&mut self){
         if let Some((u, v, p1, p2)) = self.hist.pop(){
             if u < self.parent.len(){
