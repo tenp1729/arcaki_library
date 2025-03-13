@@ -1,4 +1,4 @@
-const INF: i64 = -1<<60;
+const INF: i64 = 1<<60;
 
 pub fn bit_length(x: usize)->usize{
     64-x.leading_zeros() as usize
