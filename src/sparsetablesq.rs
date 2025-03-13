@@ -25,7 +25,7 @@ impl SparseTable2D{
         }
         for b1 in 0..bit1-1{
             for b2 in 0..bit2{
-                for i in 0..h-(1<<b1){
+                for i in 0..=h-(1<<(b1+1)){
                     for j in 0..=w-(1<<b2){
                         table[b1+1][b2][i][j] = table[b1][b2][i][j].max(table[b1][b2][i+(1<<b1)][j]);
                     }
