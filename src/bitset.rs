@@ -104,8 +104,7 @@ impl BitSet {
         let r = k&MASK;
         let n = self.data.len();
         let mut res = vec![0; n];
-        for i in 0..n{
-            if i+b>=n{break;}
+        for i in 0..n.max(b)-b{
             res[i+b] |= self.data[i] << r;
             if r > 0 && i+b+1 < n {
                 res[i+b+1] |= self.data[i] >> (BN-r);
