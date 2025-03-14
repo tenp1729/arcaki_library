@@ -23,3 +23,4 @@ pub mod sparsetablesq;
 pub mod segmenttree2d;
 pub mod weightedunionfind;
 pub mod xorshift;
+pub mod bitset;
