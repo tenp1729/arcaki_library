@@ -24,3 +24,6 @@ pub mod segmenttree2d;
 pub mod weightedunionfind;
 pub mod xorshift;
 pub mod bitset;
+pub mod ratio;
+pub mod couter;
+pub mod cumsum2d;
