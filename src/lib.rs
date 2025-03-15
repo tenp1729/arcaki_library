@@ -27,3 +27,4 @@ pub mod bitset;
 pub mod ratio;
 pub mod couter;
 pub mod cumsum2d;
+pub mod rollbackunionfind;
