@@ -1,4 +1,6 @@
+use std::collections::btree_map::Range;
 use std::collections::BTreeMap;
+use std::ops::RangeBounds;
 
 #[derive(Debug)]
 pub struct Counter<T>{
@@ -79,5 +81,10 @@ impl<T: Copy+Ord> Counter<T>{
     #[inline(always)]
     pub fn len(&self)->usize{
         self.map.len()
+    }
+
+    #[inline(always)]
+    pub fn range<R>(&self, range: R) -> Range<'_, T, usize> where R: RangeBounds<T> {
+        self.map.range(range)
     }
 }
