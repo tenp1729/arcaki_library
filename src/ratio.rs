@@ -1,3 +1,8 @@
+use num_integer::gcd;
+use std::cmp::{Ord, Ordering};
+
+const INF: i64 = 1<<60;
+
 #[derive(Copy, Clone, Debug)]
 pub struct Ratio{
     x: i64,
@@ -40,11 +45,11 @@ impl Ord for Ratio {
     }
 }
 
-fn line_equator(u: (i64, i64), v: (i64, i64)) -> (i64, i64, i64){
+pub fn line_equator(u: (i64, i64), v: (i64, i64)) -> (i64, i64, i64){
     (v.1-u.1, u.0-v.0, u.0*v.1-u.1*v.0)
 }
 
-fn cross_point(l1: (i64, i64, i64), l2: (i64, i64, i64)) -> (Ratio, Ratio){
+pub fn cross_point(l1: (i64, i64, i64), l2: (i64, i64, i64)) -> (Ratio, Ratio){
     let (a1, b1, c1) = l1;
     let (a2, b2, c2) = l2;
     if a1*b2==a2*b1{
