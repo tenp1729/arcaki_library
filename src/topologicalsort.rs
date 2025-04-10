@@ -1,4 +1,5 @@
-use std::collections::{VecDeque, BinaryHeap};
+use std::cmp::Reverse;
+use std::collections::BinaryHeap;
 
 pub fn topological_sort(n: usize, e: &Vec<(usize, usize)>) -> Option<Vec<usize>>{
     let mut edge = vec![Vec::new(); n];
@@ -8,18 +9,18 @@ pub fn topological_sort(n: usize, e: &Vec<(usize, usize)>) -> Option<Vec<usize>>
         cnt[v] += 1;
     }
     let mut res = Vec::with_capacity(n);
-    let mut stack = VecDeque::new();
+    let mut stack = Vec::new();
     for i in 0..n{
         if cnt[i]==0{
-            stack.push_back(i);
+            stack.push(i);
         }
     }
-    while let Some(p) = stack.pop_front(){
+    while let Some(p) = stack.pop(){
         res.push(p);
         for &nex in &edge[p]{
             cnt[nex] -= 1;
             if cnt[nex] == 0{
-                stack.push_back(nex);
+                stack.push(nex);
             }
         }
     }
@@ -41,15 +42,15 @@ pub fn lexical_topological_sort(n: usize, e: &Vec<(usize, usize)>) -> Option<Vec
     let mut heap = BinaryHeap::new();
     for i in 0..n{
         if cnt[i]==0{
-            heap.push(i);
+            heap.push(Reverse(i));
         }
     }
-    while let Some(p) = heap.pop(){
+    while let Some(Reverse(p)) = heap.pop(){
         res.push(p);
         for &nex in &edge[p]{
             cnt[nex] -= 1;
             if cnt[nex] == 0{
-                heap.push(nex);
+                heap.push(Reverse(nex));
             }
         }
     }
