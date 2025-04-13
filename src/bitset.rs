@@ -7,6 +7,12 @@ pub struct BitSet{
     data: Vec<usize>,
 }
 
+impl PartialEq<&BitSet> for BitSet {
+    fn eq(&self, other: &&BitSet) -> bool {
+        self==other
+    }
+}
+
 impl BitSet {
     #[inline]
     pub fn new(cap: usize) -> Self {
