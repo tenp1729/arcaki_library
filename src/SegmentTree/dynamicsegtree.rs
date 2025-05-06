@@ -121,7 +121,13 @@ impl<M> DynamicSegmenttree<M> where M: SegTreeMonoid {
         let ret = if let Some(ln) = left {
             self.max_right_dfs(ln, l, m, x, ac, f)
         } else {
-            x
+            let rr = M::op(ac, &M::identity());
+            if f(&rr){
+                *ac = rr;
+                m
+            } else {
+                l.max(x)
+            }
         };
         if ret < m {
             return ret;
@@ -156,7 +162,13 @@ impl<M> DynamicSegmenttree<M> where M: SegTreeMonoid {
         let ret = if let Some(rn) = right {
             self.min_left_dfs(rn, m, r, x, ac, f)
         } else {
-            m
+            let ll = M::op(&ac, &M::identity());
+            if f(&ll){
+                *ac = ll;
+                m
+            } else {
+                r.min(x)
+            }
         };
         if ret > m {
             ret
