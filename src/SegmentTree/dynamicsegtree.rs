@@ -25,6 +25,10 @@ impl<M> DynamicSegmenttree<M> where M: SegTreeMonoid {
         self.update_dfs(0, 0, self.n, p, x, true);
     }
 
+    pub fn get(&self, p: usize)->M::S{
+        self.prod(p, p+1)
+    }
+
     fn update_dfs(&mut self, p: usize, l: usize, r: usize, idx: usize, x: M::S, f: bool) -> M::S {
         if l + 1 == r {
             let (pre, left, right) = self.data[p];
