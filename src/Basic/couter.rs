@@ -1,9 +1,8 @@
 use std::collections::btree_map::Range;
 use std::collections::BTreeMap;
-use std::ops::RangeBounds;
 
 #[derive(Debug)]
-pub struct Counter<T>{
+pub struct Counter<T: Ord>{
     map: BTreeMap<T, usize>,
 }
 
@@ -15,13 +14,26 @@ impl<T: Copy+Ord> Counter<T>{
     }
 
     #[inline(always)]
-    pub fn mi(&self)->T{
-        *self.map.range(..).next().unwrap().0
+    pub fn range<R>(&self, range: R)->BTreeRange<'_, T, usize> where R: RangeBounds<T>{
+        self.map.range(range)
     }
 
     #[inline(always)]
-    pub fn mx(&self)->T{
-        *self.map.range(..).next_back().unwrap().0
+    pub fn mi(&self)->Option<T>{
+        if let Some((x, _)) = self.range(..).next(){
+            Some(*x)
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn mx(&self)->Option<T>{
+        if let Some((x, _)) = self.range(..).next_back(){
+            Some(*x)
+        } else {
+            None
+        }
     }
 
     #[inline(always)]
