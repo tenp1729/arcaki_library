@@ -52,4 +52,15 @@ impl RollbackUnionFind{
             }
         }
     }
+    
+    pub fn snapshot(&mut self){
+        self.hist.clear()
+    }
+    
+    pub fn all_back(&mut self){
+        while let Some((u, v, x, y)) = self.hist.pop(){
+            self.parent[u] = x;
+            self.parent[v] = y;
+        }
+    }
 }

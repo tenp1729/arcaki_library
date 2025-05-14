@@ -77,15 +77,15 @@ impl RollingHash {
         }
     }
 
-    pub fn get(&mut self, l: usize, r: usize) -> u128 {
+    pub fn get(&self, l: usize, r: usize) -> u128 {
         (M + self.hash[r] - self.hash[l] * self.pow[r - l] % M) % M
     }
 
-    pub fn map_get(&mut self, l: usize, r: usize) -> u128 {
+    pub fn map_get(&self, l: usize, r: usize) -> u128 {
         (M + self.hash[r] - self.hash[l] % M) % M
     }
 
-    pub fn same(&mut self, l1: usize, r1: usize, l2: usize, r2: usize) -> bool {
+    pub fn same(&self, l1: usize, r1: usize, l2: usize, r2: usize) -> bool {
         self.get(l1, r1) == self.get(l2, r2)
     }
 }
