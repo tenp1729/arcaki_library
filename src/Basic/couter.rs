@@ -3,12 +3,14 @@ use std::collections::BTreeMap;
 
 #[derive(Debug)]
 pub struct Counter<T: Ord>{
+    c: usize,
     map: BTreeMap<T, usize>,
 }
 
 impl<T: Copy+Ord> Counter<T>{
     pub fn new()->Self{
         Counter{
+            c: 0,
             map: BTreeMap::new(),
         }
     }
@@ -39,15 +41,18 @@ impl<T: Copy+Ord> Counter<T>{
     #[inline(always)]
     pub fn one_add(&mut self, x: T){
         *self.map.entry(x).or_insert(0) += 1;
+        self.c += 1;
     }
 
     #[inline(always)]
     pub fn one_sub(&mut self, x: T){
+        if !self.map.contains_key(&x){return}
         let e = self.map.entry(x).or_insert(0);
         *e = e.saturating_sub(1);
         if self.map[&x] <= 0{
             self.map.remove(&x);
         }
+        self.c = self.c.saturating_sub(1);
     }
 
     #[inline(always)]
@@ -58,12 +63,14 @@ impl<T: Copy+Ord> Counter<T>{
 
     #[inline(always)]
     pub fn del(&mut self, x: T){
+        self.c = self.c.saturating_sub(*self.map.get(&x).unwrap_or(&0));
         self.map.remove(&x);
     }
 
     #[inline(always)]
     pub fn add(&mut self, x: T, c: usize){
         *self.map.entry(x).or_insert(0) += c;
+        self.c += c;
     }
 
     #[inline(always)]
@@ -73,6 +80,7 @@ impl<T: Copy+Ord> Counter<T>{
         if self.map[&x] == 0{
             self.map.remove(&x);
         }
+        self.c = self.c.saturating_sub(c);
     }
 
     #[inline(always)]
