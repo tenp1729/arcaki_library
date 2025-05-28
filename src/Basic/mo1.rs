@@ -15,18 +15,18 @@ pub trait MoMonoid{
     fn get(t: &Self::T, x: &Self::U)->Self::X;
 }
 
-const DIV: usize = 500;
-
 pub fn solve_mo<M>(a: Vec<M::S>, query: Vec<(usize, usize, M::U)>)->Vec<M::X> where M: MoMonoid{
-    let mut res = vec![M::X::default(); query.len()];
-    let mut ord = (0..query.len()).collect::<Vec<_>>();
-        ord.sort_by(|&u, &v| (query[u].0/DIV).cmp(&(query[v].0/DIV)).then(if query[u].0/DIV%2==0{
+    let (n, q) = (a.len(), query.len());
+    let div = (n as f64/(q as f64).sqrt()).ceil() as usize;
+    let mut res = vec![M::X::default(); q];
+    let mut ord = (0..q).collect::<Vec<_>>();
+    ord.sort_by(|&u, &v| (query[u].0/div).cmp(&(query[v].0/div)).then(if query[u].0/div%2==0{
         query[u].1.cmp(&query[v].1)
     } else {
         query[v].1.cmp(&query[u].1)
     }));
     let (mut l, mut r) = (0, 0);
-    let mut b = M::id_t(a.len(), query.len());
+    let mut b = M::id_t(n, q);
     for idx in ord{
         let (left, right) = (query[idx].0, query[idx].1);
         while r < right{

@@ -1,7 +1,4 @@
-use std::collections::btree_map::Range;
-use std::collections::BTreeMap;
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Counter<T: Ord>{
     c: usize,
     map: BTreeMap<T, usize>,
@@ -101,5 +98,22 @@ impl<T: Copy+Ord> Counter<T>{
     #[inline(always)]
     pub fn len(&self)->usize{
         self.map.len()
+    }
+
+    #[inline(always)]
+    pub fn clear(&mut self){
+        self.map.clear();
+        self.c = 0;
+    }
+
+    #[inline(always)]
+    pub fn merge(&mut self, rhs: &mut Counter<T>){
+        if self.len() < rhs.len(){
+            swap(self, rhs);
+        }
+        for (&k, &v) in rhs.map.iter(){
+            self.add(k, v);
+        }
+        rhs.clear();
     }
 }

@@ -13,13 +13,13 @@ pub trait MoMonoid{
     fn get(t: &Self::T, x: &Self::U)->Self::X;
 }
 
-// N/√Qが目安
-const DIV: usize = 500;
-
 pub fn solve_mo_2d<M>(a1: Vec<M::S1>, a2: Vec<M::S2>, query: Vec<(usize, usize, M::U)>)->Vec<M::X> where M: MoMonoid{
-    let mut res = vec![M::id_x(a1.len(), a2.len(), query.len()); query.len()];
+    let n = a1.len()+a2.len();
+    let q = query.len();
+    let mut res = vec![M::id_x(a1.len(), a2.len(), query.len()); q];
     let mut ord = (0..query.len()).collect::<Vec<_>>();
-    ord.sort_by(|&u, &v| (query[u].0/DIV).cmp(&(query[v].0/DIV)).then(if query[u].0/DIV%2==0{
+    let div = (n as f64/(q as f64).sqrt()).ceil() as usize;
+    ord.sort_by(|&u, &v| (query[u].0/div).cmp(&(query[v].0/div)).then(if query[u].0/div%2==0{
         query[u].1.cmp(&query[v].1)
     } else {
         query[v].1.cmp(&query[u].1)
