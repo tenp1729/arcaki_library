@@ -1,8 +1,3 @@
-use num_integer::gcd;
-use std::cmp::{Ord, Ordering};
-
-const INF: i64 = 1<<60;
-
 #[derive(Copy, Clone, Debug)]
 pub struct Ratio{
     x: i64,
@@ -10,16 +5,45 @@ pub struct Ratio{
 }
 
 impl Ratio {
+    #[inline]
     pub fn new(mut x: i64, mut y: i64) -> Self {
         if x < 0{
             (x, y) = (-x, -y);
         }
         let g = gcd(x, y).abs();
-        Ratio {x: x/g, y:y/g}
+        if g==0{
+            return Ratio{x,y};
+        }
+        Ratio {x: x/g, y:floor(y,g)}
     }
 
+    #[inline]
     pub fn int(x: i64)->Self{
         Ratio{x:1, y: x}
+    }
+
+    #[inline]
+    pub fn inv(self)->Self{
+        Ratio{x:self.y,y:self.x}
+    }
+
+    #[inline]
+    pub fn is_inf(self)->bool{
+        self.x==0
+    }
+}
+
+impl Neg for Ratio{
+    type Output = Ratio;
+
+    fn neg(self) -> Self::Output {
+        Ratio::new(self.x, -self.y)
+    }
+}
+
+impl From<i64> for Ratio{
+    fn from(value: i64) -> Self {
+        Ratio::int(value)
     }
 }
 
@@ -41,22 +65,147 @@ impl Eq for Ratio {}
 
 impl Ord for Ratio {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.partial_cmp(&other).unwrap()
+        self.partial_cmp(other).unwrap()
     }
 }
 
-pub fn line_equator(u: (i64, i64), v: (i64, i64)) -> (i64, i64, i64){
-    (v.1-u.1, u.0-v.0, u.0*v.1-u.1*v.0)
+impl Add for Ratio{
+    type Output = Ratio;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Ratio::new(self.x*rhs.x, self.y*rhs.x+self.x*rhs.y)
+    }
 }
 
-pub fn cross_point(l1: (i64, i64, i64), l2: (i64, i64, i64)) -> (Ratio, Ratio){
-    let (a1, b1, c1) = l1;
-    let (a2, b2, c2) = l2;
-    if a1*b2==a2*b1{
-        (Ratio::new(1, INF), Ratio::new(1, INF))
-    } else {
-        let y = Ratio::new(a1*b2-a2*b1, a1*c2-c1*a2);
-        let x = Ratio::new(a1*b2-a2*b1, c1*b2-b1*c2);
-        (x, y)
+impl Add<i64> for Ratio{
+    type Output = Ratio;
+
+    fn add(self, rhs: i64) -> Self::Output {
+        Ratio::new(self.x, self.y+self.x*rhs)
+    }
+}
+
+impl AddAssign for Ratio{
+    fn add_assign(&mut self, rhs: Self) {
+        *self+rhs;
+    }
+}
+
+impl AddAssign<i64> for Ratio{
+    fn add_assign(&mut self, rhs: i64) {
+        *self+rhs;
+    }
+}
+
+impl Sub for Ratio{
+    type Output = Ratio;
+    fn sub(self, rhs: Self) -> Self::Output {
+        Ratio::new(self.x*rhs.x, self.y*rhs.x-self.x*rhs.y)
+    }
+}
+
+impl Sub<i64> for Ratio{
+    type Output = Ratio;
+    fn sub(self, rhs: i64) -> Self::Output {
+        Ratio::new(self.x, self.y-self.x*rhs)
+    }
+}
+
+impl SubAssign for Ratio{
+    fn sub_assign(&mut self, rhs: Self) {
+        *self-rhs;
+    }
+}
+
+impl SubAssign for Ratio{
+    fn sub_assign(&mut self, rhs: Self) {
+        *self-rhs;
+    }
+}
+
+impl Mul for Ratio{
+    type Output = Ratio;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Ratio::new(self.x*rhs.x, self.y*rhs.y)
+    }
+}
+
+impl Mul<i64> for Ratio{
+    type Output = Ratio;
+
+    fn mul(self, rhs: i64) -> Self::Output {
+        Ratio::new(self.x, self.y*rhs)
+    }
+}
+
+impl MulAssign for Ratio{
+    fn mul_assign(&mut self, rhs: Self) {
+        *self*rhs;
+    }
+}
+
+impl MulAssign<i64> for Ratio{
+    fn mul_assign(&mut self, rhs: i64) {
+        *self*rhs;
+    }
+}
+
+impl Div for Ratio{
+    type Output = Ratio;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        self*rhs.inv()
+    }
+}
+
+impl Div<i64> for Ratio{
+    type Output = Ratio;
+
+    fn div(self, rhs: i64) -> Self::Output {
+        Ratio::new(self.x*rhs, self.y)
+    }
+}
+
+impl DivAssign for Ratio{
+    fn div_assign(&mut self, rhs: Self) {
+        *self/rhs;
+    }
+}
+
+impl DivAssign<i64> for Ratio{
+    fn div_assign(&mut self, rhs: i64) {
+        *self/rhs;
+    }
+}
+
+impl PartialEq<i64> for Ratio{
+    fn eq(&self, other: &i64) -> bool {
+        *self == Ratio::int(*other)
+    }
+}
+
+impl PartialOrd<i64> for Ratio{
+    fn partial_cmp(&self, other: &i64) -> Option<Ordering> {
+        self.partial_cmp(&Ratio::int(*other))
+    }
+}
+
+impl PartialEq<Ratio> for i64{
+    fn eq(&self, other: &Ratio) -> bool {
+        Ratio::int(*self)==*other
+    }
+}
+
+impl PartialOrd<Ratio> for i64{
+    fn partial_cmp(&self, other: &Ratio) -> Option<Ordering> {
+        Ratio::int(*self).partial_cmp(other)
+    }
+}
+
+impl Hash for Ratio{
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.y.hash(state);
+        self.x.hash(state);
     }
 }
