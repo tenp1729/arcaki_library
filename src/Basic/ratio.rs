@@ -87,13 +87,13 @@ impl Add<i64> for Ratio{
 
 impl AddAssign for Ratio{
     fn add_assign(&mut self, rhs: Self) {
-        *self+rhs;
+        *self = *self+rhs;
     }
 }
 
 impl AddAssign<i64> for Ratio{
     fn add_assign(&mut self, rhs: i64) {
-        *self+rhs;
+        *self = *self+rhs;
     }
 }
 
@@ -113,13 +113,13 @@ impl Sub<i64> for Ratio{
 
 impl SubAssign for Ratio{
     fn sub_assign(&mut self, rhs: Self) {
-        *self-rhs;
+        *self = *self-rhs;
     }
 }
 
 impl SubAssign for Ratio{
     fn sub_assign(&mut self, rhs: Self) {
-        *self-rhs;
+        *self = *self-rhs;
     }
 }
 
@@ -141,13 +141,13 @@ impl Mul<i64> for Ratio{
 
 impl MulAssign for Ratio{
     fn mul_assign(&mut self, rhs: Self) {
-        *self*rhs;
+        *self = *self*rhs;
     }
 }
 
 impl MulAssign<i64> for Ratio{
     fn mul_assign(&mut self, rhs: i64) {
-        *self*rhs;
+        *self = *self*rhs;
     }
 }
 
@@ -155,7 +155,7 @@ impl Div for Ratio{
     type Output = Ratio;
 
     fn div(self, rhs: Self) -> Self::Output {
-        self*rhs.inv()
+        *self = *self*rhs.inv()
     }
 }
 
@@ -169,13 +169,13 @@ impl Div<i64> for Ratio{
 
 impl DivAssign for Ratio{
     fn div_assign(&mut self, rhs: Self) {
-        *self/rhs;
+        *self = *self/rhs;
     }
 }
 
 impl DivAssign<i64> for Ratio{
     fn div_assign(&mut self, rhs: i64) {
-        *self/rhs;
+        *self = *self/rhs;
     }
 }
 
