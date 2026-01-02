@@ -1,7 +1,6 @@
 // 逆元あり
 pub trait SqrtDecomposition{
     type S: Clone;
-    type T: Clone;
     fn identity()->Self::S;
     fn op(a: &Self::S, b: &Self::S)->Self::S;
     fn inv(a: &Self::S)->Self::S;

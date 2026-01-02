@@ -1,160 +1,195 @@
-pub fn bit_length(x: usize) -> usize {
-    64 - x.saturating_sub(1).leading_zeros() as usize
-}
-
-// 別にCopyじゃなくてCloneでもいいけどあんまり使わないと思われる…
-pub trait SegTreeMonoid {
-    type S: Copy;
+pub trait SegtreeMonoid {
+    type S: Clone;
     fn identity() -> Self::S;
     fn op(a: &Self::S, b: &Self::S) -> Self::S;
 }
 
-// 計算に可換性を要求しているので注意。
-// 初期化時にノードを作らずNoneなら単位元を返す実装なら
-// 動的セグ木との兼用がおそらく可能でその場合10^9サイズとかでも問題ない。
-pub struct PersistentSegmenttree<M> where M: SegTreeMonoid {
-    n: usize, log: usize,
-    data: Vec<(M::S, Option<usize>, Option<usize>)>,
-    root: Vec<usize>,
+#[derive(Clone, Debug)]
+pub struct SegtreeNode<S: Clone>{
+    val: S,
+    left: u32,
+    right: u32,
 }
 
-impl<M> PersistentSegmenttree<M> where M: SegTreeMonoid {
-    pub fn new(n: usize)->Self {
-        let k = n.next_power_of_two();
-        let log = bit_length(k);
-        let mut vec = Vec::with_capacity(2 * k);
-        vec.push((M::identity(), None, None));
-        for i in 1..k {
-            vec.push((M::identity(), Some(2 * i), Some(2 * i + 1)));
-        }
-        for _ in 0..k {
-            vec.push((M::identity(), None, None));
-        }
-        let root = vec![1];
-        PersistentSegmenttree {
-            n: k, log, data: vec, root,
-        }
+#[derive(Debug)]
+pub struct PersistentSegtree<M: SegtreeMonoid>{
+    n: usize,
+    data: Vec<SegtreeNode<M::S>>,
+    root: Vec<u32>,
+}
+
+impl<M: SegtreeMonoid> PersistentSegtree<M> {
+    pub fn new(mut n: usize) -> Self {
+        n = n.next_power_of_two();
+        let data = Vec::with_capacity(2*n);
+        let mut sg = Self {
+            n, data, root: Vec::new(),
+        };
+        let r = sg.init(0, n);
+        sg.root.push(r as u32);
+        sg
     }
 
-    pub fn build(vec: &Vec<M::S>) -> Self {
-        let n = vec.len().next_power_of_two();
-        let log = bit_length(n);
-        let mut data = vec![(M::identity(), None, None); 2 * n];
-        for (i, &v) in vec.iter().enumerate() {
-            data[n + i] = (v, None, None);
-        }
-        for i in (1..n).rev() {
-            data[i] = (M::op(&data[2 * i].0, &data[2 * i + 1].0), Some(2 * i), Some(2 * i + 1));
-        }
-        let root = vec![1];
-        PersistentSegmenttree {
-            n, log, data, root,
-        }
+        pub fn new_with_q(mut n: usize, q: usize) -> Self {
+        n = n.next_power_of_two();
+        let data = Vec::with_capacity(2*n+q*20);
+        let mut sg = Self {
+            n, data, root: Vec::new(),
+        };
+        let r = sg.init(0, n);
+        sg.root.push(r as u32);
+        sg
     }
 
-    pub fn update(&mut self, t: usize, mut p: usize, x: M::S) {
-        let nex = self.data.len();
-        self.root.push(nex);
-        let mut pp = self.root[t];
-        p += self.n;
-        for i in 0..self.log {
-            let (_, l, r) = self.data[pp];
-            if p & 1 << (self.log - i - 1) == 0 {
-                self.data.push((M::identity(), Some(nex + i + 1), r));
-                pp = l.unwrap();
-            } else {
-                self.data.push((M::identity(), l, Some(nex + i + 1)));
-                pp = r.unwrap();
-            }
-        }
-        self.data.push((x, None, None));
-        for i in (0..self.log).rev() {
-            let (_, l, r) = self.data[nex + i];
-            let (left, right) = (l.unwrap(), r.unwrap());
-            let res = M::op(&self.data[left].0, &self.data[right].0);
-            self.data[nex+i] = (res, l, r);
-        }
+    pub fn build(a: &[M::S]) -> Self {
+        let n = a.len().next_power_of_two();
+        let data = Vec::with_capacity(2*n);
+        let mut sg = Self {
+            n, data, root: Vec::new(),
+        };
+        let r = sg.init_s(a, 0, n);
+        sg.root.push(r as u32);
+        sg
     }
 
+    #[inline(always)]
+    fn push_node(&mut self, node: SegtreeNode<M::S>)->usize{
+        let r = self.data.len();
+        self.data.push(node);
+        r
+    }
+
+    #[inline(always)]
+    fn init(&mut self, l: usize, r: usize)->usize{
+        if l+1==r{
+            return self.push_node(SegtreeNode { val: M::identity(), left: !0, right: !0 });
+        }
+        let m = (l+r)>>1;
+        let left = self.init(l, m);
+        let right = self.init(m, r);
+        let val = M::op(&self.data[left].val, &self.data[right].val);
+        self.push_node(SegtreeNode { val, left: left as u32, right: right as u32 })
+    }
+
+    #[inline(always)]
+    fn init_s(&mut self, a: &[M::S], l: usize, r: usize)->usize{
+        if l+1==r{
+            return self.push_node(SegtreeNode { val: if l < a.len(){a[l].clone()}else{M::identity()}, left: !0, right: !0 });
+        }
+        let m = (l+r)>>1;
+        let left = self.init_s(a, l, m);
+        let right = self.init_s(a, m, r);
+        let val = M::op(&self.data[left].val, &self.data[right].val);
+        self.push_node(SegtreeNode { val, left: left as u32, right: right as u32 })
+    }
+
+    #[inline]
+    pub fn versions(&self) -> usize {
+        self.root.len()
+    }
+
+    #[inline]
+    pub fn update(&mut self, t: usize, p: usize, x: M::S){
+        let nr = self.update_dfs(self.root[t] as usize, 0, self.n, p, &x);
+        self.root.push(nr as u32);
+    }
+
+    #[inline(always)]
+    fn update_dfs(&mut self, cur: usize, l: usize, r: usize, p: usize, x: &M::S)->usize{
+        if l+1==r{
+            return self.push_node(SegtreeNode { val: x.clone(), left: !0, right: !0 });
+        }
+        let m = (l+r)>>1;
+        let pre = &self.data[cur];
+        let (cl, cr) = (pre.left, pre.right);
+        let (nl, nr) = if p < m{
+            let nl = self.update_dfs(cl as usize, l, m, p, x) as u32;
+            (nl, cr)
+        } else {
+            let nr = self.update_dfs(cr as usize, m, r, p, x)as u32;
+            (cl, nr)
+        };
+        self.push_node(SegtreeNode { val: M::op(&self.data[nl as usize].val, &self.data[nr as usize].val), left: nl, right: nr })
+    }
+
+    #[inline]
     pub fn prod(&self, t: usize, l: usize, r: usize) -> M::S {
-        let mut res = M::identity();
-        let p = self.root[t];
-        self.dfs1(p, l, r, 0, self.n, &mut res);
-        res
+        self.prod_dfs(self.root[t]as usize, 0, self.n, l, r)
     }
 
-    fn dfs1(&self, p: usize, l: usize, r: usize, x: usize, y: usize, res: &mut M::S) {
-        let (z, left, right) = self.data[p];
-        if l <= x && y <= r {
-            *res = M::op(res, &z);
-            return;
+    #[inline(always)]
+    fn prod_dfs(&self, cur: usize, cl: usize, cr: usize, l: usize, r: usize) -> M::S {
+        if r <= cl || cr <= l{
+            return M::identity();
+        } else if l <= cl && cr <= r {
+            return self.data[cur].val.clone();
         }
-        let mid = (x + y) / 2;
-        if mid > l {
-            self.dfs1(left.unwrap(), l, r, x, mid, res);
-        }
-        if mid < r {
-            self.dfs1(right.unwrap(), l, r, mid, y, res);
-        }
+        let m = (cl+cr)/2;
+        let node = &self.data[cur];
+        let ln = self.prod_dfs(node.left as usize, cl, m, l, r);
+        let rn = self.prod_dfs(node.right as usize, m, cr, l, r);
+        M::op(&ln, &rn)
     }
 
-    pub fn max_right<F>(&self, t: usize, l: usize, f: F) -> usize where F: Fn(&M::S) -> bool {
+    #[inline]
+    pub fn min_left<F>(&self, t: usize, r: usize, f: F) -> usize where F: Fn(&M::S)->bool{
         assert!(f(&M::identity()));
-        if l == self.n { return self.n }
+        if r==0{return 0;}
         let mut ac = M::identity();
-        self.dfs2(self.root[t], 0, self.n, l, &mut ac, &f)
+        self.min_left_dfs(self.root[t] as usize, 0, self.n, r, &mut ac, &f)
     }
 
-    fn dfs2<F>(&self, p: usize, l: usize, r: usize, x: usize, ac: &mut M::S, f: &F) -> usize where F: Fn(&M::S) -> bool {
-        if r <= x  {
-            return x
-        }
-        if l >= x {
-            let res = M::op(ac, &self.data[p].0);
-            if f(&res) {
-                *ac = res;
-                return r;
-            } else if r - l == 1 {
+        #[inline]
+    pub fn max_right<F>(&self, t: usize, l: usize, f: F) -> usize where F: Fn(&M::S)->bool{
+        assert!(f(&M::identity()));
+        if l==self.n{return self.n;}
+        let mut ac = M::identity();
+        self.max_right_dfs(self.root[t] as usize, 0, self.n, l, &mut ac, &f)
+    }
+
+    fn min_left_dfs<F>(&self, cur: usize, l: usize, r: usize, x: usize, ac: &mut M::S, f: &F) -> usize where F: Fn(&M::S)->bool{
+        if x <= l {return l;}
+        if r <= x{
+            let m = M::op(&self.data[cur].val, ac);
+            if f(&m){
+                *ac = m;
                 return l;
+            } else if r-l==1{
+                return r;
             }
         }
-        let m = (l + r) / 2;
-        let (_, left, right) = self.data[p];
-        let ret = self.dfs2(left.unwrap(), l, m, x, ac, f);
-        if ret < m {
+        let m = (l+r)>>1;
+        let node = &self.data[cur];
+        let ret = self.min_left_dfs(node.right as usize, m, r, x, ac, f);
+        if ret > m{
             return ret;
         }
-        self.dfs2(right.unwrap(), m, r, x, ac, f)
+        self.min_left_dfs(node.left as usize, l, m, x, ac, f)
     }
 
-    // 動作がバグってる恐れあり
-    pub fn min_left<F>(&self, t: usize, r: usize, f: F) -> usize where F: Fn(&M::S) -> bool {
-        assert!(f(&M::identity()));
-        let p = self.root[t];
-        if r == 0 { return 0; }
-        let mut ac = M::identity();
-        self.dfs3(p, 0, self.n, r, &mut ac, &f)
-    }
-
-    fn dfs3<F>(&self, p: usize, l: usize, r: usize, x: usize, ac: &mut M::S, f: &F) -> usize where F: Fn(&M::S) -> bool {
-        if x <= l {
-            return l;
-        } else if r <= x {
-            let res = M::op(&self.data[p].0, ac);
-            if f(&res) {
-                *ac = res;
-                return l;
-            } else if l + 1 == r {
+    fn max_right_dfs<F>(&self, cur: usize, l: usize, r: usize, x: usize, ac: &mut M::S, f: &F) -> usize where F: Fn(&M::S)->bool{
+        if r <= x{return x;}
+        if x <= l{
+            let m = M::op(ac, &self.data[cur].val);
+            if f(&m){
+                *ac = m;
                 return r;
             }
+            if l+1==r{
+                return l;
+            }
         }
-        let m = (l + r) / 2;
-        let (_, left, right) = self.data[p];
-        let ret = self.dfs3(right.unwrap(), m, r, x, ac, f);
-        if ret > m {
-            ret
-        } else {
-            self.dfs3(left.unwrap(), l, m, x, ac, f)
+        let m = (l+r)>>1;
+        let node = &self.data[cur];
+        let (ln, rn) = (node.left, node.right);
+        let ret = self.max_right_dfs(ln as usize, l, m, x, ac, f);
+        if ret < m{
+            return ret;
         }
+        self.max_right_dfs(rn as usize, m, r, x, ac, f)
+    }
+
+    pub fn get(&self, t: usize, p: usize) -> M::S {
+        self.prod(t, p, p+1)
     }
 }

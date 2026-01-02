@@ -112,8 +112,8 @@ pub fn offline_dynamic_connectivity(n: usize, query: &Vec<(usize, usize, usize)>
             for &(u, v) in &segtree[p]{
                 uf.merge(u, v);
             }
+            vec.push((p, false));
             if p < q{
-                vec.push((p, false));
                 vec.push((2*p+1, true));
                 vec.push((2*p, true));
             } else if let Some((u, v)) = question[p-q]{

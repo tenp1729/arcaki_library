@@ -24,7 +24,7 @@ impl Ratio {
 
     #[inline]
     pub fn inv(self)->Self{
-        Ratio{x:self.y,y:self.x}
+        Ratio::new(self.y,self.x)
     }
 
     #[inline]
@@ -117,8 +117,8 @@ impl SubAssign for Ratio{
     }
 }
 
-impl SubAssign for Ratio{
-    fn sub_assign(&mut self, rhs: Self) {
+impl SubAssign<i64> for Ratio{
+    fn sub_assign(&mut self, rhs: i64) {
         *self = *self-rhs;
     }
 }
@@ -155,7 +155,7 @@ impl Div for Ratio{
     type Output = Ratio;
 
     fn div(self, rhs: Self) -> Self::Output {
-        *self = *self*rhs.inv()
+        *self*rhs.inv()
     }
 }
 

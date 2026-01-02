@@ -25,6 +25,24 @@ impl<M: SegTreeMonoid> SegTree<M> {
         }
     }
 
+    pub fn from(a: Vec<M::S>) -> Self{
+        let n = a.len().next_power_of_two();
+        let mut data = vec![M::identity(); 2*n];
+        for (i, v) in a.iter().enumerate(){
+            data[i+n] = v.clone();
+        }
+        for i in (1..n).rev(){
+            data[i] = M::op(&data[2*i], &data[2*i+1]);
+        }
+        SegTree{
+            n, data,
+        }
+    }
+
+    pub fn get(&self, p: usize)->M::S{
+        self.data[self.n+p].clone()
+    }
+
     pub fn push(&mut self, i: usize, x: M::S) {
         let mut p = i + self.n;
         self.data[p] = M::op(&self.data[p], &x);
@@ -94,13 +112,14 @@ impl<M: SegTreeMonoid> SegTree<M> {
         r += self.n;
         let mut ac = M::identity();
         while {
+            r -= 1;
             while r > 1 && r % 2 == 1 {
                 r >>= 1;
             }
-            if !f(&M::op(&ac, &self.data[r])) {
+            if !f(&M::op(&self.data[r], &ac)) {
                 while r < self.n{
                     r = 2 * r + 1;
-                    let res = M::op(&ac, &self.data[r]);
+                    let res = M::op(&self.data[r], &ac);
                     if f(&res) {
                         ac = res;
                         r -= 1;
@@ -108,9 +127,9 @@ impl<M: SegTreeMonoid> SegTree<M> {
                 }
                 return r + 1 - self.n;
             }
-            ac = M::op(&ac, &self.data[r]);
+            ac = M::op(&self.data[r], &ac);
             let z = r as isize;
-            z & -z == z
+            z & -z != z
         } {}
         0
     }
