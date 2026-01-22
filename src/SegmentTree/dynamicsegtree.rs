@@ -1,18 +1,18 @@
-pub trait SegTreeMonoid {
+pub trait SegtreeMonoid {
     type S: Copy;
     fn identity() -> Self::S;
     fn op(a: &Self::S, b: &Self::S) -> Self::S;
 }
 
-pub struct DynamicSegmenttree<M> where M: SegTreeMonoid {
+pub struct DynamicSegtree<M> where M: SegtreeMonoid {
     n: usize,
     data: Vec<(M::S, Option<usize>, Option<usize>)>,
 }
 
-impl<M> DynamicSegmenttree<M> where M: SegTreeMonoid {
+impl<M> DynamicSegmtree<M> where M: SegtreeMonoid {
     pub fn new(n: usize) -> Self {
         let n = n.next_power_of_two();
-        DynamicSegmenttree {
+        DynamicSegtree {
             n, data: vec![(M::identity(), None, None)]
         }
     }

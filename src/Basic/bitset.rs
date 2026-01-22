@@ -2,15 +2,9 @@ const MASK: usize = 63;
 const BN: usize = 64;
 const BB: usize = 6;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct BitSet{
     data: Vec<usize>,
-}
-
-impl PartialEq<&BitSet> for BitSet {
-    fn eq(&self, other: &&BitSet) -> bool {
-        self==other
-    }
 }
 
 impl BitSet {
