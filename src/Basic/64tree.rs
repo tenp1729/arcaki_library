@@ -115,6 +115,6 @@ impl Predecessor64 {
 
     #[inline(always)]
     pub fn max(&self)->usize{
-        self.inprev((1<<(6*(TREELEVEL-1)))-1)
+        self.inprev((1<<(6*TREELEVEL))-1)
     }
 }
