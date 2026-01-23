@@ -8,7 +8,7 @@ pub struct Predecessor64{
 impl Predecessor64 {
     pub fn new()->Self{
         Predecessor64{
-            d: [[0; 1<<(6*TREELEVEL)]; TREELEVEL],
+            d: [[0; 1<<(6*(TREELEVEL-1))]; TREELEVEL],
         }
     }
 
@@ -115,6 +115,6 @@ impl Predecessor64 {
 
     #[inline(always)]
     pub fn max(&self)->usize{
-        self.inprev((1<<(6*TREELEVEL))-1)
+        self.inprev((1<<(6*(TREELEVEL-1)))-1)
     }
 }
